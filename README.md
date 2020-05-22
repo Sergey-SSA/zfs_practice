@@ -1,6 +1,7 @@
 # zfs_practice
-Установил ZFS на CentOS Linux release 7.8.2003 (Core)
-Добавил официальный репозиторий
+Установил ZFS на CentOS Linux release 7.8.2003 (Core).
+
+Добавил официальный репозиторий.
 
 `sudo yum install http://download.zfsonlinux.org/epel/zfs-release.el7_8.noarch.rpm`
 
@@ -23,11 +24,12 @@ Complete!
 ```
 
 Отключил репозиторий ZFS на основе DKMS и включил репозиторий ZFS.
-Открыл конфигурационный файл yum ZFS
+
+Открыл конфигурационный файл yum ZFS.
 
 `sudo nano /etc/yum.repos.d/zfs.repo`
 
-выключил ZFS на основе DKMS и включил ZFS-kmod
+Выключил ZFS на основе DKMS и включил ZFS-kmod.
 
 ```
 [zfs]
@@ -47,7 +49,7 @@ gpgcheck=1
 gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-zfsonlinux
 ```
 
-и установил ZFS
+И установил ZFS.
 
 `sudo yum install zfs`
 
@@ -62,16 +64,17 @@ Dependency Installed:
 Complete!
 ```
 
-После проверки проверил установку
+После установки проверил.
 
 `sudo lsmod | grep zfs`
 
 Вывода небыло.
-Загрузил модуль ядра вручную
+
+Загрузил модуль ядра вручную.
 
 `sudo modprobe zfs`
 
-и ещё раз проверил
+И ещё раз проверил.
 
 ```
 zfs                  3986613  0
@@ -85,7 +88,8 @@ spl                   104299  5 icp,zfs,zavl,zcommon,znvpair
 ```
 
 Всё готово можно работать с ZFS.
-Проверил версию ZFS
+
+Проверил версию ZFS.
 
 `zfs version`
 
@@ -94,8 +98,9 @@ zfs-0.8.4-1
 zfs-kmod-0.8.4-1
 ```
 
-Задача - ○ создать 4 файловых системы на каждой применить свой алгоритм сжатия
-Создал пул на диске sdb
+Задача - создать 4 файловых системы на каждой применить свой алгоритм сжатия.
+
+Создал пул на диске sdb.
 
 `sudo zpool create pool1 sdb`
 
@@ -108,7 +113,7 @@ NAME    SIZE  ALLOC   FREE  CKPOINT  EXPANDSZ   FRAG    CAP  DEDUP    HEALTH  AL
 pool1  4.50G   212K  4.50G        -         -     0%     0%  1.00x    ONLINE  -
 ```
 
-На созданном пуле создал 4 файловые системы
+На созданном пуле создал 4 файловые системы.
 
 `sudo zfs create pool1/data1`
 
@@ -118,7 +123,7 @@ pool1  4.50G   212K  4.50G        -         -     0%     0%  1.00x    ONLINE  -
 
 `sudo zfs create pool1/data4`
 
-Проверил все точки монтирования
+Проверил все точки монтирования.
 
 `df -h`
 
@@ -137,7 +142,7 @@ pool1/data3     4.4G  128K  4.4G   1% /pool1/data3
 pool1/data4     4.4G  128K  4.4G   1% /pool1/data4
 ```
 
-Для созданных файловых систем установил типы сжатий
+Для созданных файловых систем установил типы сжатий.
 
 `sudo zfs set compression=gzip-9 pool1/data1`
 
@@ -147,11 +152,11 @@ pool1/data4     4.4G  128K  4.4G   1% /pool1/data4
 
 `sudo zfs set compression=lz4 pool1/data4`
 
-Скачал тестовый файл
+Скачал тестовый файл.
 
 `wget -O War_and_Peace.txt http://www.gutenberg.org/ebooks/2600.txt.utf-8`
 
-И разместил его на файловых системах
+И разместил его на файловых системах.
 
 `sudo cp War_and_Peace.txt /pool1/data1`
 
@@ -191,9 +196,11 @@ pool1/data4  compression    lz4       local
 pool1/data4  compressratio  1.08x     -
 ```
 
-Следующая задача - Определить настройки pool’a
+**Следующая задача - Определить настройки pool’a**
+
 Загрузить архив с файлами, распокавать и собрать pool ZFS.
-Восстановил пул
+
+Восстановил пул.
 
 `wget --no-check-certificate -O file.tar.gz 'https://drive.google.com/u/0/uc?id=1KRBNW33QWqbvbVHa3hLJivOAt60yukkg&export=download'`
 
@@ -262,7 +269,7 @@ otus    480M  2.09M   478M        -         -     0%     0%  1.00x    ONLINE  -
 pool1  4.50G  4.84M  4.50G        -         -     0%     0%  1.00x    ONLINE  -
 ```
 
-Определили размер хранилища
+Определил размер хранилища
 
 `sudo zfs get recordsize /otus`
 
@@ -310,7 +317,7 @@ otus            checksum  sha256     local
 otus/hometask2  checksum  sha256     inherited from otus
 ```
 
-Задача - из востановленного снапшота прочитать сообщение от преподавателей в файле *secret_message*
+**Задача - из востановленного снапшота прочитать сообщение от преподавателей в файле secret_message**
 
 Скачал файл
 
@@ -320,19 +327,23 @@ otus/hometask2  checksum  sha256     inherited from otus
 
 `sudo zfs receive otus/task2 < otus_task2.file`
 
-`ls -l /otus/task2/`
+`sudo ls -lah /otus/task2/`
 
 ```
-total 2590
--rw-r--r--. 1 root    root          0 May 15 06:46 10M.file
--rw-r--r--. 1 root    root     309987 May 15 06:39 Limbo.txt
--rw-r--r--. 1 root    root     509836 May 15 06:39 Moby_Dick.txt
--rw-r--r--. 1 root    root    1209374 May  6  2016 War_and_Peace.txt
--rw-r--r--. 1 root    root     727040 May 15 07:08 cinderella.tar
--rw-r--r--. 1 root    root         65 May 15 06:39 for_examaple.txt
--rw-r--r--. 1 root    root          0 May 15 06:39 homework4.txt
-drwxr-xr-x. 3 vagrant vagrant       4 Dec 18  2017 task1
--rw-r--r--. 1 root    root     398635 May 15 06:45 world.sql
+total 2.6M
+drwxr-xr-x. 3 root    root      11 May 15 07:08 .
+drwxr-xr-x. 4 root    root       4 May 22 20:06 ..
+-rw-r--r--. 1 root    root       0 May 15 06:46 10M.file
+-rw-r--r--. 1 root    root    303K May 15 06:39 Limbo.txt
+-rw-r--r--. 1 root    root    498K May 15 06:39 Moby_Dick.txt
+-rw-r--r--. 1 root    root    1.2M May  6  2016 War_and_Peace.txt
+-rw-r--r--. 1 root    root    710K May 15 07:08 cinderella.tar
+-rw-r--r--. 1 root    root      65 May 15 06:39 for_examaple.txt
+-rw-r--r--. 1 root    root       0 May 15 06:39 homework4.txt
+drwxr-xr-x. 3 vagrant vagrant    4 Dec 18  2017 task1
+-rw-r--r--. 1 root    root    390K May 15 06:45 world.sql
+
+
 ```
 
-Файла *secret_message* нет
+Файла **secret_message** нет
